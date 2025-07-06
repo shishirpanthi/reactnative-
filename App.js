@@ -1,73 +1,110 @@
+import 'react-native-gesture-handler';
 import React from 'react';
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  Pressable,
-  Alert,
-  StyleSheet,
-} from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { enableScreens } from 'react-native-screens';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Text } from 'react-native';
 
-function App() {
-  const handlePress = () => {
-    Alert.alert('Button Pressed!');
-  };
+import Home from './src/screens/Home';
+import AboutUs from './src/screens/AboutUs';
+import Services from './src/screens/Services';
+import ContactUs from './src/screens/ContactUs';
 
-  const handlePressablePress = () => {
-    Alert.alert('Pressable Pressed!');
-  };
+enableScreens();
+const Tab = createBottomTabNavigator();
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Hello World</Text>
-      <Image
-        source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }}
-        style={styles.image}
+// Fallback icon component
+const FallbackIcon = ({ iconName, size, color }) => (
+  <Text style={{ fontSize: size, color }}>{iconName}</Text>
+);
+
+const SafeIcon = ({ name, size, color, focused }) => {
+  try {
+    return (
+      <Ionicons
+        name={name}
+        size={size}
+        color={color}
       />
-      <TouchableOpacity style={styles.button} onPress={handlePress}>
-        <Text style={styles.buttonText}>Press Me</Text>
-      </TouchableOpacity>
-      <Pressable style={styles.button} onPress={handlePressablePress}>
-        <Text style={styles.buttonText}>Pressable Button</Text>
-      </Pressable>
-    </View>
+    );
+  } catch (error) {
+    // Fallback to text if icon fails
+    return <FallbackIcon iconName={focused ? '●' : '○'} size={size} color={color} />;
+  }
+};
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: true,
+          tabBarActiveTintColor: '#ff8000',
+          tabBarInactiveTintColor: 'gray',
+          tabBarStyle: {
+            paddingBottom: 5,
+            height: 60,
+          },
+        }}
+      >
+        <Tab.Screen
+          name="Home"
+          component={Home}
+          options={{
+            tabBarIcon: ({ focused, color, size }) => (
+              <SafeIcon
+                name={focused ? 'home' : 'home-outline'}
+                size={size}
+                color={color}
+                focused={focused}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="About Us"
+          component={AboutUs}
+          options={{
+            tabBarIcon: ({ focused, color, size }) => (
+              <SafeIcon
+                name={focused ? 'information-circle' : 'information-circle-outline'}
+                size={size}
+                color={color}
+                focused={focused}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Services"
+          component={Services}
+          options={{
+            tabBarIcon: ({ focused, color, size }) => (
+              <SafeIcon
+                name={focused ? 'grid' : 'grid-outline'}
+                size={size}
+                color={color}
+                focused={focused}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Contact Us"
+          component={ContactUs}
+          options={{
+            tabBarIcon: ({ focused, color, size }) => (
+              <SafeIcon
+                name={focused ? 'call' : 'call-outline'}
+                size={size}
+                color={color}
+                focused={focused}
+              />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-    padding: 20,
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  image: {
-    width: 100,
-    height: 100,
-    marginBottom: 30,
-  },
-  button: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 30,
-    paddingVertical: 15,
-    borderRadius: 8,
-    marginVertical: 10,
-    minWidth: 200,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
-
-export default App;
